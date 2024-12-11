@@ -305,6 +305,9 @@ class HistoryManager
     // Return the length of the current publishing queue.
     virtual size_t publishQueueLength() const = 0;
 
+    // Determine if last close ledger should publishing a checkpoint.
+    // If true, insert lcl (last close ledger) and its state into table "publishingqueue"
+    //
     // Calls queueCurrentHistory() if the current ledger is a multiple of
     // getCheckpointFrequency() -- equivalently, the LCL is one _less_ than
     // a multiple of getCheckpointFrequency(). Returns true if checkpoint
@@ -325,8 +328,12 @@ class HistoryManager
     // returns 0 if the publish queue has nothing in it.
     virtual uint32_t getMaxLedgerQueuedToPublish() = 0;
 
-    // Publish any checkpoints queued (in the database) for publication.
-    // Returns the number of publishes initiated.
+    /**
+     * @brief Publish any checkpoints queued (in the database) for publication.
+     * Fetch from Postgres table "publishqueue" for ledger's state which will be publish to history archives
+     * 
+     * @return size_t the number of publishes initiated.
+     */
     virtual size_t publishQueuedHistory() = 0;
 
     // Return the set of buckets referenced by the persistent (DB) publish

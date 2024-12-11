@@ -524,7 +524,7 @@ during replays.
 void
 LedgerManagerImpl::closeLedger(LedgerCloseData const& ledgerData)
 {
-    ZoneScoped;
+    ZoneScoped; //macro provided by the Tracy profiler.  Allows for insights into performance characteristics.
     auto ledgerTime = mLedgerClose.TimeScope();
     LogSlowExecution closeLedgerTime{"closeLedger",
                                      LogSlowExecution::Mode::MANUAL, "",
@@ -727,13 +727,13 @@ LedgerManagerImpl::closeLedger(LedgerCloseData const& ledgerData)
 
     // step 1
     auto& hm = mApp.getHistoryManager();
-    hm.maybeQueueHistoryCheckpoint();
+    hm.maybeQueueHistoryCheckpoint();  //Determine if last close ledger should publishing a checkpoint.  If yes, insert to table "publishingqueue"
 
     // step 2
-    ltx.commit();
+    ltx.commit(); //commits in-memory ledger to database
 
     // step 3
-    hm.publishQueuedHistory();
+    hm.publishQueuedHistory(); //publish any checkpoints queued in table "publishingqueue"
     hm.logAndUpdatePublishStatus();
 
     // step 4

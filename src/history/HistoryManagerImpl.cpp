@@ -194,6 +194,12 @@ HistoryManagerImpl::getMaxLedgerQueuedToPublish()
     return 0;
 }
 
+/**
+ * @brief Determine if last close ledger should publishing a checkpoint.
+ * 
+ * @return true insert lcl (last close ledger) and its state into table "publishingqueue"
+ * @return false 
+ */
 bool
 HistoryManagerImpl::maybeQueueHistoryCheckpoint()
 {
@@ -247,6 +253,11 @@ HistoryManagerImpl::queueCurrentHistory()
     mPublishQueueBuckets.addBuckets(has.allBuckets());
 }
 
+/**
+ * @brief For ledger to be pubished, get its buckes and publish all the info to history archiver.
+ * 
+ * @param ledger to be pubished 
+ */
 void
 HistoryManagerImpl::takeSnapshotAndPublish(HistoryArchiveState const& has)
 {
@@ -286,6 +297,15 @@ HistoryManagerImpl::takeSnapshotAndPublish(HistoryArchiveState const& has)
         snap, seq, allBucketsFromHAS);
 }
 
+/**
+ * @brief Fetch from Postgres table "publishqueue" for ledger's state which will be publish to history archives
+ * as well as persisted to local database.
+ * 
+ * Note:  uses SOCI (Simple Open C++ Interface) is a C++ database access library that allows you to embed SQL queries directly 
+ * into your C++ code. It provides a clean and intuitive way to interact with various database backends.
+ * 
+ * @return size_t the number of publishes initiated.
+ */
 size_t
 HistoryManagerImpl::publishQueuedHistory()
 {
