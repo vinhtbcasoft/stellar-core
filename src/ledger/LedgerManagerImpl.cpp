@@ -1085,6 +1085,12 @@ LedgerManagerImpl::transferLedgerEntriesToBucketList(AbstractLedgerTxn& ltx,
     }
 }
 
+/**
+ * @brief Records the ledger header for the new ledger, the transactions that got applied, SCP messages
+ * recorded by the validator during the consensus round.
+ * 
+ * @param ltx 
+ */
 void
 LedgerManagerImpl::ledgerClosed(AbstractLedgerTxn& ltx)
 {
